@@ -1,6 +1,6 @@
 from pygame.sprite import Sprite
 
-from dino_runner.utils.constants import LARGE_CACTUS, SCREEN_WIDTH, SCREEN_HEIGHT
+from dino_runner.utils.constants import LARGE_CACTUS, SCREEN_WIDTH
 
 
 class Obstacle(Sprite):
@@ -10,7 +10,6 @@ class Obstacle(Sprite):
         self.type = type
         self.rect = self.image[type].get_rect()
         self.rect.x = SCREEN_WIDTH
-        self.rect.y = 320
 
     def update(self, game_speed, obstacles):
         self.rect.x -= game_speed

@@ -11,7 +11,7 @@ class LivesManager():
 
     def refill_lives(self):
         pos_x = 10
-        for i in range(0, 3):
+        for i in range(0, 4):
             self.lives.append(Lives(pos_x))
             pos_x += 30
 

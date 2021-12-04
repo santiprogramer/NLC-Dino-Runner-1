@@ -72,3 +72,6 @@ HEART = pygame.image.load(os.path.join(IMG_DIR, 'Other/SmallHeart.png'))
 DEFAULT_TYPE = "default"
 SHIELD_TYPE = "shield"
 HAMMER_TYPE = "hammer"
+
+DARK_MODE = (0, 0, 0)
+NORMAL_MODE = (255, 255, 255)

@@ -1,5 +1,7 @@
 import pygame
 from pygame.sprite import Sprite
+
+from dino_runner.components.text_utils import get_centered_message
 from dino_runner.utils.constants import RUNNING, DUCKING, JUMPING, DEFAULT_TYPE, SHIELD_TYPE, DUCKING_SHIELD, \
     RUNNING_SHIELD, JUMPING_SHIELD, HAMMER_TYPE, DUCKING_HAMMER, RUNNING_HAMMER, JUMPING_HAMMER
 
@@ -84,15 +86,14 @@ class Dinosaur(Sprite):
             self.dino_jump = False
             self.jump_vel = self.JUMP_VEL
 
-    def check_invincibility(self, screen):
+    def check_invincibility(self, screen, dark):
         if self.shield:
             time_to_show = round((self.shield_time_up - pygame.time.get_ticks()) / 100, 2)
             if time_to_show >= 0:
                 if self.show_text:
                     fond = pygame.font.Font("freesansbold.ttf", 18)
                     text = fond.render(f'Shield enable for {time_to_show}', fond,(0, 0, 0))
-                    text_rect = text.get_rect()
-                    text_rect.center = (500,40)
+                    text,text_rect = get_centered_message(f'Shield enable for {time_to_show}', width=500,height=40,dark=dark)
                     screen.blit(text, text_rect)
             else:
                 self.shield = False

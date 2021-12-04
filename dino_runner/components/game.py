@@ -1,3 +1,5 @@
+import random
+
 import pygame
 
 from dino_runner.components.dinosaur import Dinosaur
@@ -5,7 +7,7 @@ from dino_runner.components.life.lives_manager import LivesManager
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 from dino_runner.components.text_utils import get_score_element, get_centered_message
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DARK_MODE, NORMAL_MODE, CLOUD
 from dino_runner.components import text_utils
 
 
@@ -25,12 +27,25 @@ class Game:
         self.points = 0
         self.running = True
         self.death_count = 0
+        self.dark = False
         self.powerup_manager = PowerUpManager()
         self.lives_manager = LivesManager()
+
+        self.separation = random.randint(350, 450)
+        self.x_pos_cloud1 = 0 + self.separation
+        self.x_pos_cloud2 = 0 + self.separation*2
+        self.x_pos_cloud3 = 0 + self.separation*3
+        self.x_pos_cloud4 = 0 + self.separation*4
+        self.y_pos_cloud1 = random.randint(100, 250)
+        self.y_pos_cloud2 = random.randint(100, 250)
+        self.y_pos_cloud3 = random.randint(100, 250)
+        self.y_pos_cloud4 = random.randint(100, 250)
+        self.separation = 250
 
     def run(self):
         self.lives_manager.refill_lives()
         self.game_speed = 20
+        self.points = 0
         self.create_components()
         # Game loop: events - update - draw
         self.playing = True
@@ -62,10 +77,19 @@ class Game:
 
     def draw(self):
         self.clock.tick(FPS)
-        self.screen.fill((255, 255, 255))
+        if self.points % 1000 == 0:
+            if(self.points / 1000) % 2 == 0:
+                self.dark = False
+            else:
+                self.dark = True
+        if self.dark:
+            self.screen.fill(DARK_MODE)
+        else:
+            self.screen.fill(NORMAL_MODE)
         self.draw_background()
         self.lives_manager.draw(self.screen)
         self.score()
+        self.draw_clouds()
         self.player.draw(self.screen)
         self.obstacle_manage.draw(self.screen)
         self.powerup_manager.draw(self.screen)
@@ -78,9 +102,9 @@ class Game:
         if self.points % 100 == 0:
             self.game_speed += 1
 
-        score, score_rect = get_score_element(self.points)
+        score, score_rect = get_score_element(self.points, self.dark)
         self.screen.blit(score, score_rect)
-        self.player.check_invincibility(self.screen)
+        self.player.check_invincibility(self.screen, self.dark)
 
     def show_menu(self):
         self.running = True
@@ -121,3 +145,25 @@ class Game:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
         self.x_pos_bg -= self.game_speed
+
+    def draw_clouds(self):
+        self.screen.blit(CLOUD, (self.x_pos_cloud1, self.y_pos_cloud1))
+        self.screen.blit(CLOUD, (self.x_pos_cloud2, self.y_pos_cloud2))
+        self.screen.blit(CLOUD, (self.x_pos_cloud3, self.y_pos_cloud3))
+        self.screen.blit(CLOUD, (self.x_pos_cloud4, self.y_pos_cloud4))
+        self.x_pos_cloud1 -= self.game_speed // 2
+        self.x_pos_cloud2 -= self.game_speed // 2
+        self.x_pos_cloud3 -= self.game_speed // 2
+        self.x_pos_cloud4 -= self.game_speed // 2
+        if self.x_pos_cloud1 <=- SCREEN_WIDTH//4:
+            self.x_pos_cloud1 = SCREEN_WIDTH
+            self.y_pos_cloud1 = random.randint(100, 250)
+        if self.x_pos_cloud2 <=- SCREEN_WIDTH//4:
+            self.x_pos_cloud2 = SCREEN_WIDTH
+            self.y_pos_cloud2 = random.randint(100, 250)
+        if self.x_pos_cloud3 <=- SCREEN_WIDTH//4:
+            self.x_pos_cloud3 = SCREEN_WIDTH
+            self.y_pos_cloud3 = random.randint(100, 250)
+        if self.x_pos_cloud4 <=- SCREEN_WIDTH//4:
+            self.x_pos_cloud4 = SCREEN_WIDTH
+            self.y_pos_cloud4 = random.randint(100, 250)
